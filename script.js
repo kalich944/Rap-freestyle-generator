@@ -612,7 +612,7 @@ document.addEventListener('DOMContentLoaded', () => {
 'в тамбуре поезда',
 'на мокром асфальте',
 'в подземном переходе',
-'на вокзальной площади']
+'на вокзальной площади'];
            const level4Words = {
         subjects: [
 'Бабка',
