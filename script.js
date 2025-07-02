@@ -950,7 +950,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const subject = getRandomElement(level4Words.subjects);
             const action = getRandomElement(level4Words.actions);
             const place = getRandomElement(level4Words.places);
-            phrase = `${subject} ${action} ${place}`;
+            phrase = `${subject} ${action} ${place}`
         } 
         resultDiv.textContent = phrase;
     };
