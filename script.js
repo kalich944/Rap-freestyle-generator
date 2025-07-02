@@ -946,8 +946,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const action = getRandomElement(level3Words.actions);
             const place = getRandomElement(level3Words.places);
             phrase = `${subject} ${action} ${place}`;
-        }
-         } else if (selectedLevel === 4) {
+        } else if (selectedLevel === 4) {
             const subject = getRandomElement(level4Words.subjects);
             const action = getRandomElement(level4Words.actions);
             const place = getRandomElement(level4Words.places);
