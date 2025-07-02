@@ -1,24 +1,23 @@
 body {
     font-family: Arial, sans-serif;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
     height: 100vh;
     margin: 0;
     background-color: #f0f0f0;
 }
 
-.container {
-    text-align: center;
-}
-
 .level-buttons {
-    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* расстояние между кнопками */
+    padding: 20px 0;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .level-btn {
     padding: 10px 20px;
-    margin: 5px;
     font-size: 16px;
     cursor: pointer;
     border: none;
@@ -32,6 +31,25 @@ body {
     color: white;
 }
 
+.level-btn:hover {
+    background-color: #999;
+}
+
+.container {
+    flex-grow: 1; /* занимает всё пространство между верхом и низом */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.result {
+    font-size: 24px;
+    font-weight: bold;
+    min-height: 30px;
+}
+
 .start-btn {
     padding: 15px 30px;
     font-size: 18px;
@@ -41,15 +59,10 @@ body {
     background-color: #28a745;
     color: white;
     transition: background-color 0.3s;
+    margin: 20px auto;
+    display: block;
 }
 
 .start-btn:hover {
     background-color: #218838;
-}
-
-.result {
-    margin-top: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    min-height: 30px;
 }
