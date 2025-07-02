@@ -1,12 +1,75 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const levelButtons = document.querySelectorAll('.level-btn');
-    const startButton = document.querySelector('.start-btn');
-    const resultDiv = document.querySelector('#result');
-    let selectedLevel = 1;
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Словесная игра</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
 
-    // Word lists
-    const level1Words = [
-'Пельмени',
+    h1 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .level-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+
+    .level-buttons button,
+    #start-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .level-buttons button.active {
+      background-color: #28a745;
+    }
+
+    #output {
+      margin-top: 30px;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Выбери уровень и нажми "Старт"</h1>
+
+  <div class="level-buttons">
+    <button onclick="selectLevel(1)">Уровень 1</button>
+    <button onclick="selectLevel(2)">Уровень 2</button>
+    <button onclick="selectLevel(3)">Уровень 3</button>
+    <button onclick="selectLevel(4)">Уровень 4</button>
+  </div>
+
+  <button id="start-btn" onclick="startGame()">Старт</button>
+
+  <div id="output">...</div>
+
+  <script>
+    let currentLevel = 1;
+
+    const level1 = ['Пельмени',
 'Маршрутка',
 'Очередь',
 'Лопата',
@@ -104,8 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
 'Чайник',
 'Треники',
 'Заначка'];
-    const level2Words = [
-'Пыльный рюкзак',
+    const level2 = ['Пыльный рюкзак',
 'Горячий чай',
 'Сломанный зонт',
 'Кривая полка',
@@ -306,9 +368,8 @@ document.addEventListener('DOMContentLoaded', () => {
 'Свет выключается',
 'Петля отваливается',
 'Печенье крошится'];
-    const level3Words = {
-        subjects: [
-'Бабка',
+    
+    const level3_subjects = ['Бабка',
 'Прохожий',
 'Сосед',
 'Таксист',
@@ -409,9 +470,8 @@ document.addEventListener('DOMContentLoaded', () => {
 'Кассирша из Пятёрочки',
 'Гопник в подъезде',
 'Бабка с палкой',
-'Старик у магазина'],
-        actions: [
-'уснул',
+'Старик у магазина'];
+    const level3_actions = ['уснул',
 'упал',
 'завис',
 'поскользнулся',
@@ -512,9 +572,8 @@ document.addEventListener('DOMContentLoaded', () => {
 'растерял',
 'провалился',
 'забился',
-'заныкал'],
-        places: [
-'в подъезде',
+'заныкал'];
+    const level3_places  = ['в подъезде',
 'в магазине',
 'на остановке',
 'в автобусе',
@@ -613,348 +672,42 @@ document.addEventListener('DOMContentLoaded', () => {
 'на мокром асфальте',
 'в подземном переходе',
 'на вокзальной площади'];
-           const level4Words = {
-        subjects: [
-'Бабка',
-'Прохожий',
-'Сосед',
-'Таксист',
-'Школьник',
-'Учительница',
-'Продавец',
-'Кассирша',
-'Пацан',
-'Девочка',
-'Мужик',
-'Студент',
-'Охранник',
-'Бомж',
-'Мама',
-'Папа',
-'Ребёнок',
-'Парень',
-'Девушка',
-'Кот',
-'Пёс',
-'Курьер',
-'Дед',
-'Бабушка',
-'Гопник',
-'Водитель',
-'Дворник',
-'Брат',
-'Сестра',
-'Покупатель',
-'Ученик',
-'Подросток',
-'Тётка',
-'Малыш',
-'Повар',
-'Библиотекарь',
-'Сторож',
-'Соседка',
-'Инспектор',
-'Зубной врач',
-'Тренер',
-'Повариха',
-'Фотограф',
-'Певец',
-'Клоун',
-'Поварёнок',
-'Кассир',
-'Бабуля',
-'Дедуля',
-'Такса',
-'Рэпер',
-'Модник',
-'Няня',
-'Тренерша',
-'Разносчик',
-'Клоунесса',
-'Парикмахер',
-'Официант',
-'Официантка',
-'Певица',
-'Директор',
-'Бухгалтер',
-'Секретарша',
-'Уборщица',
-'Доктор',
-'Пациент',
-'Санитар',
-'Повар дяди Вани',
-'Бабка с рынка',
-'Мужик в тапках',
-'Парень с колонкой',
-'Школьник с портфелем',
-'Тётя с пакетами',
-'Мужчина в пиджаке',
-'Девочка в шапке',
-'Пацан с самокатом',
-'Дворник с метлой',
-'Мужик в шортах',
-'Пенсионер',
-'Школьница',
-'Сосед с дрелью',
-'Студент с ноутом',
-'Тётка с пирогом',
-'Бомж с гармошкой',
-'Бабка у подъезда',
-'Мужик с арбузом',
-'Ребёнок в сланцах',
-'Бабуля с балкона',
-'Парень с кофе',
-'Мужчина с газетой',
-'Девочка с шариком',
-'Старик',
-'Тётка из очереди',
-'Сосед с пятого',
-'Дед с палочкой',
-'Мужик в маршрутке',
-'Таксист с усами',
-'Прохожий в капюшоне',
-'Кассирша из Пятёрочки',
-'Гопник в подъезде',
-'Бабка с палкой',
-'Старик у магазина'],
-        actions: [
-'уснул',
-'упал',
-'завис',
-'поскользнулся',
-'спрятался',
-'орал',
-'ждал',
-'плакал',
-'смеялся',
-'ушёл',
-'пришёл',
-'забыл',
-'нашёл',
-'уехал',
-'задремал',
-'ворчал',
-'споткнулся',
-'сидел',
-'стоял',
-'лежал',
-'зашёл',
-'вышел',
-'дрых',
-'пропал',
-'шептал',
-'замёрз',
-'спрятал',
-'торопился',
-'ругался',
-'курил',
-'ел',
-'пил',
-'грелся',
-'охрип',
-'заплакал',
-'обжёгся',
-'поскандалил',
-'вырубился',
-'перхнул',
-'споткнул ногу',
-'шарахнулся',
-'спрятался',
-'растерялся',
-'блуждал',
-'привалился',
-'влип',
-'задохнулся',
-'кашлял',
-'переобулся',
-'заслушался',
-'оторопел',
-'зевнул',
-'обронил',
-'заикался',
-'обиделся',
-'переиграл',
-'перебрал',
-'перепутал',
-'успокоился',
-'устал',
-'подсел',
-'сломался',
-'переел',
-'растёкся',
-'застрял',
-'задумался',
-'обломался',
-'разнылся',
-'разлёгся',
-'разорался',
-'загрустил',
-'загнался',
-'размечтался',
-'остановился',
-'накосячил',
-'замолчал',
-'зависал',
-'вскрикнул',
-'подсуетился',
-'переобул кроссы',
-'затупил',
-'осёкся',
-'вскочил',
-'покраснел',
-'приуныл',
-'залип',
-'запыхался',
-'поверил',
-'передумал',
-'смолчал',
-'подумал',
-'обрадовался',
-'подскользнулся',
-'упёрся',
-'запутался',
-'ушибся',
-'влетел',
-'свалился',
-'растерял',
-'провалился',
-'забился',
-'заныкал'],
-        places: [
-'в подъезде',
-'в магазине',
-'на остановке',
-'в автобусе',
-'в маршрутке',
-'на кухне',
-'во дворе',
-'в лифте',
-'в коридоре',
-'в туалете',
-'в школе',
-'в столовой',
-'в очереди',
-'на рынке',
-'в ларьке',
-'в подвале',
-'на балконе',
-'в классе',
-'в парке',
-'в подъездной арке',
-'на скамейке',
-'в метро',
-'на переходе',
-'в электричке',
-'на балконе',
-'в палатке',
-'в гараже',
-'на лестнице',
-'на крыльце',
-'в коммуналке',
-'в раздевалке',
-'на парковке',
-'на лавке',
-'на детской площадке',
-'в аптеке',
-'в кофейне',
-'в лифтовом холле',
-'в булочной',
-'в Пятёрочке',
-'в подъездной тени',
-'в дворовом закутке',
-'у мусорки',
-'в парикмахерской',
-'на вокзале',
-'в телефоне',
-'на чердаке',
-'в обшарпанной комнате',
-'у подъезда',
-'в фойе',
-'в супермаркете',
-'на кухонном полу',
-'в библиотеке',
-'на остановке автобуса',
-'в спортзале',
-'в раздолбанной маршрутке',
-'в такси',
-'на кассе',
-'в кладовке',
-'в тамбуре',
-'в киоске',
-'в комнате',
-'на лестничной клетке',
-'на тротуаре',
-'в закусочной',
-'в переулке',
-'в спальне',
-'на школьном дворе',
-'в спортшколе',
-'в комнате отдыха',
-'в вестибюле',
-'в туалетной кабинке',
-'на подоконнике',
-'на крыше',
-'в душевой',
-'в кофейном углу',
-'в школьной раздевалке',
-'в компьютерном клубе',
-'в прачечной',
-'в подземке',
-'в хрущёвке',
-'на кухне общаги',
-'в очереди в поликлинике',
-'на железной скамейке',
-'на скамейке у подъезда',
-'в холле ТЦ',
-'в маршрутке на заднем',
-'на кухне у бабки',
-'в подвале дома',
-'в заброшке',
-'на школьной перемене',
-'у окошка кассы',
-'в ночном автобусе',
-'в проветриваемом классе',
-'на стройке',
-'в кабине лифта',
-'в тамбуре поезда',
-'на мокром асфальте',
-'в подземном переходе',
-'на вокзальной площади']
-    };
+    
+    const level4_subjects = ['бабушка', 'сосед', 'пожарный', 'актриса', 'студент', 'геймер'];
+    const level4_actions  = ['готовит суп', 'чинит телевизор', 'поёт песню', 'играет в шахматы', 'читает газету', 'танцует'];
+    const level4_places   = ['на кухне', 'в гостиной', 'в метро', 'на даче', 'в библиотеке'];
 
-    // Handle level button clicks
-    levelButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            levelButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            selectedLevel = parseInt(button.getAttribute('data-level'));
-        });
+    function selectLevel(level) {
+      currentLevel = level;
+      document.querySelectorAll('.level-buttons button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`.level-buttons button:nth-child(${level})`).classList.add('active');
+    }
+
+    function startGame() {
+      let result = "";
+
+      if (currentLevel === 1) {
+        result = randomItem(level1);
+      } else if (currentLevel === 2) {
+        result = randomItem(level2);
+      } else if (currentLevel === 3) {
+        result = `${randomItem(level3_subjects)} ${randomItem(level3_actions)} ${randomItem(level3_places)}`;
+      } else if (currentLevel === 4) {
+        result = `${randomItem(level4_subjects)} ${randomItem(level4_actions)} ${randomItem(level4_places)}`;
+      }
+
+      document.getElementById("output").textContent = result;
+    }
+
+    function randomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      selectLevel(1);
     });
-
-    // Random choice helper function
-    const getRandomElement = (array) => array[Math.floor(Math.random() * array.length)];
-
-    // Generate phrase based on level
-    const generatePhrase = () => {
-        let phrase = '';
-        if (selectedLevel === 1) {
-            phrase = getRandomElement(level1Words);
-        } else if (selectedLevel === 2) {
-            phrase = getRandomElement(level2Words);
-        } else if (selectedLevel === 3) {
-            const subject = getRandomElement(level3Words.subjects);
-            const action = getRandomElement(level3Words.actions);
-            const place = getRandomElement(level3Words.places);
-            phrase = `${subject} ${action} ${place}`;
-        } else if (selectedLevel === 4) {
-            const subject = getRandomElement(level4Words.subjects);
-            const action = getRandomElement(level4Words.actions);
-            const place = getRandomElement(level4Words.places);
-            phrase = `${subject} ${action} ${place}`
-        } 
-        resultDiv.textContent = phrase;
-    };
-
-    // Handle start button click
-    startButton.addEventListener('click', generatePhrase);
-});
+  </script>
+</body>
+</html>
