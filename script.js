@@ -16,7 +16,7 @@ const level4 = {
 };
 
 // УКАЖИ ТОЧНЫЕ ИМЕНА СВОИХ ФОНОВ (с расширением!)
-const backgrounds = ['1.png', '2.png', '3 charted', '4.png']; // ← замени на свои реальные имена
+const backgrounds = ['1.png', '2.png', '3.png', '4.png']; // ← замени на свои реальные имена
 
 const bg = document.getElementById('bg');
 const output = document.getElementById('output');
