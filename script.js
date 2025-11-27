@@ -16,7 +16,6 @@ const level2_words = [
   'Грязное зеркало','Ржавая труба','Сгоревшая лампочка','Пустой блокнот','Медленный интернет','Мокрый асфальт',
   'Тарелка супа','Теплый плед','Пятно на футболке','Холодная батарея','Пирожок с капустой','Пульт под диваном',
   'Гречка без соли','Незаправленная кровать','Открытая форточка','Мелкий дождь','Заваленная кладовка'
-  // ...добавь все свои, если нужно
 ];
 
 const level3 = {
@@ -40,10 +39,28 @@ const output = document.getElementById('output');
 const sprayBtn = document.getElementById('spray-btn');
 const goBtn = document.getElementById('go-btn');
 const soundBtn = document.getElementById('sound-btn');
-const audio = document.getElementById('bgm');
 
 let currentLevel = 1;
 let musicOn = true;
+
+// === ИНИЦИАЛИЗАЦИЯ МУЗЫКИ С БЕСШОВНЫМ ЛУПОМ ===
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+let audioSource = null;
+
+async function loadAndPlayAudio() {
+  const response = await fetch('b1.mp3');
+  const arrayBuffer = await response.arrayBuffer();
+  const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+  audioSource = audioContext.createBufferSource();
+  audioSource.buffer = audioBuffer;
+  audioSource.loop = true;
+  audioSource.connect(audioContext.destination);
+
+  if (musicOn) audioSource.start(0);
+}
+
+loadAndPlayAudio().catch(console.error);
 
 // === ПЕРЕКЛЮЧЕНИЕ УРОВНЯ БАЛЛОНЧИКОМ ===
 sprayBtn.addEventListener('click', () => {
@@ -54,7 +71,7 @@ sprayBtn.addEventListener('click', () => {
   }
 });
 
-// === КНОПКА GO — ВСЕГДА ГЕНЕРИРУЕТ НОВЫЙ ТЕКСТ ===
+// === КНОПКА GO — ГЕНЕРИРУЕТ ТЕКСТ ===
 goBtn.addEventListener('click', () => {
   let text = '';
 
@@ -70,7 +87,6 @@ goBtn.addEventListener('click', () => {
 
   output.textContent = text;
 
-  // Эффект вибрации в Telegram
   if (window.Telegram?.WebApp?.HapticFeedback) {
     window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
   }
@@ -79,31 +95,30 @@ goBtn.addEventListener('click', () => {
 // === МУЗЫКА ON/OFF ===
 soundBtn.addEventListener('click', () => {
   if (musicOn) {
-    audio.pause();
+    audioSource.stop();
     soundBtn.classList.add('off');
   } else {
-    audio.play().catch(() => {});
+    audioSource = audioContext.createBufferSource();
+    audioSource.buffer = audioSource.buffer; // Переиспользуем буфер
+    audioSource.loop = true;
+    audioSource.connect(audioContext.destination);
+    audioSource.start(0);
     soundBtn.classList.remove('off');
   }
   musicOn = !musicOn;
 });
 
-// Разблокировка автоплея после первого касания
-document.body.addEventListener('click', () => {
-  if (musicOn && audio.paused) {
-    audio.play().catch(() => {});
+// === СТАРТОВАЯ ГЕНЕРАЦИЯ ТЕКСТА НА 1 УРОВНЕ ===
+document.addEventListener('DOMContentLoaded', () => {
+  bg.style.backgroundImage = 'url("1.png")';
+  output.textContent = randomItem(level1_words);
+  if (window.Telegram?.WebApp) {
+    Telegram.WebApp.ready();
+    Telegram.WebApp.expand();
   }
-}, { once: true });
+});
 
 // === ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ===
 function randomItem(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
-}
-
-// === СТАРТ ===
-bg.style.backgroundImage = 'url("1.png")';
-
-if (window.Telegram?.WebApp) {
-  Telegram.WebApp.ready();
-  Telegram.WebApp.expand();
 }
